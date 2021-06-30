@@ -3,17 +3,32 @@ $(document).ready(() => {
   const socket = io();
   
   $("#chatForm").submit(() => {
-    socket.emit("message");
+    let text = $("#chat-input").val();
+    socket.emit("message", {
+      content: text
+    });
+    console.log(message)
     $("#chat-input").val("");
     return false;
   });
   
   socket.on("message", (message) => {
-    displayMessage(message.content);
+    console.log('recipeApp message', message)
+    displayMessage(message);
   });
   
   let displayMessage = (message) => {
-    $("#chat").prepend($("<li>").html(message));
+    console.log('displayMessage | message', message);
+    $("#chat").prepend(
+      $("<li>").html(`<div>
+                      ${message.content}
+                    </div>`)
+    );
+  };
+
+  let getCurrentUserClass = (id) => {
+    let userId = $('#chat-user-id').val();
+    return userId === id ? "current-user": "";
   }
 
   $("#modal-button").click(() => {
