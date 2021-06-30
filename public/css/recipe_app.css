@@ -205,3 +205,9 @@ button[type="submit"] {
   color: #625956;
   border: 1px solid;
 }
+
+#chat {
+  height: 500px;
+  border: solid 1px #d4cfcf;
+  margin: 10px 0px;
+}

@@ -1,4 +1,21 @@
 $(document).ready(() => {
+
+  const socket = io();
+  
+  $("#chatForm").submit(() => {
+    socket.emit("message");
+    $("#chat-input").val("");
+    return false;
+  });
+  
+  socket.on("message", (message) => {
+    displayMessage(message.content);
+  });
+  
+  let displayMessage = (message) => {
+    $("#chat").prepend($("<li>").html(message));
+  }
+
   $("#modal-button").click(() => {
     $(".modal-body").html("");
     $.get("/api/courses?apiToken=recipeT0k3n", (results = {}) => {
@@ -23,22 +40,25 @@ $(document).ready(() => {
       addJoinButtonListener();
     });
   });
+
+  let addJoinButtonListener = () => {
+    $(".join-button").click(event => {
+      let $button = $(event.target),
+        courseId = $button.data("id");
+      $.get(`/api/courses/${courseId}/join`, (results = {}) => {
+        let data = results.data;
+        if (data && data.success) {
+          $button
+            .text("Joined")
+            .addClass("joined-button")
+            .removeClass("join-button");
+        } else {
+          $button.text("Try again");
+        }
+      });
+    });  
+  };
+  
+  
 });
 
-let addJoinButtonListener = () => {
-  $(".join-button").click(event => {
-    let $button = $(event.target),
-      courseId = $button.data("id");
-    $.get(`/api/courses/${courseId}/join`, (results = {}) => {
-      let data = results.data;
-      if (data && data.success) {
-        $button
-          .text("Joined")
-          .addClass("joined-button")
-          .removeClass("join-button");
-      } else {
-        $button.text("Try again");
-      }
-    });
-  });
-};
